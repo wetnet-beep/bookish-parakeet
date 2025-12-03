@@ -1,0 +1,9 @@
+{
+    "name": "УчебаНа5+",
+    "short_name": "УчебаНа5",
+    "description": "Оффлайн решалка уравнений",
+    "start_url": "/uchebana5/",
+    "display": "standalone",
+    "background_color": "#2196f3",
+    "theme_color": "#2196f3"
+}

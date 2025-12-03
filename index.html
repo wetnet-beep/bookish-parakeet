@@ -1,0 +1,330 @@
+<script>
+if (navigator.userAgent.includes('YaBrowser')) {
+    // Яндекс открывает в мобильном режиме
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('loader').style.display = 'none';
+        document.querySelector('.container').style.display = 'block';
+    });
+}
+</script>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>УчебаНа5+</title>
+    
+    <!-- УДАЛИ ИЛИ ЗАКОММЕНТИРУЙ ЭТИ СТРОКИ ЕСЛИ ФАЙЛОВ НЕТ: -->
+    <!-- 
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2196f3">
+    -->
+    
+    <!-- ВСЕ ПУТИ С ТОЧКОЙ В НАЧАЛЕ -->
+    <link rel="stylesheet" href="./style.css">
+    
+    <!-- Math.js (ЕСЛИ НУЖЕН) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.7.0/math.min.js"></script>
+    
+    <!-- Иконки -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- УДАЛИ ЭТУ СТРОКУ ЕСЛИ НЕТ ФАЙЛА: -->
+    <!-- <link rel="icon" href="assets/icon-192.png"> -->
+    
+    <style>
+        /* Простой лоадер на случай если CSS не грузится */
+        #simpleLoader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #2196f3;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            z-index: 9999;
+        }
+    </style>
+</head>
+<body>
+    <!-- Простой лоадер -->
+    <div id="simpleLoader">
+        <div>УчебаНа5+ загружается...</div>
+    </div>
+    
+    <!-- Основной контейнер (будет скрыт пока не загрузится) -->
+    <div class="container" style="display:none;">
+        <!-- ТВОЙ СОДЕРЖИМОЕ БЕЗ ИЗМЕНЕНИЙ -->
+        <!-- ... весь твой HTML код ... -->
+    </div>
+    
+    <!-- ВСЕ СКРИПТЫ В КОНЦЕ -->
+    <script src="./app.js"></script>
+    
+    <!-- Скрипт для проверки загрузки -->
+    <script>
+        // Прячем лоадер и показываем контент когда всё загрузится
+        window.addEventListener('load', function() {
+            document.getElementById('simpleLoader').style.display = 'none';
+            document.querySelector('.container').style.display = 'block';
+            
+            // Проверяем что файлы загрузились
+            console.log('✅ Загрузка завершена');
+            console.log('CSS загружен:', !!document.querySelector('link[href*="style.css"]'));
+            console.log('JS загружен:', !!document.querySelector('script[src*="app.js"]'));
+            
+            // Фикс для Яндекс.Браузера
+            if (navigator.userAgent.includes('YaBrowser')) {
+                console.log('🔧 Яндекс.Браузер - отключаем проблемные функции');
+                if (navigator.serviceWorker) {
+                    navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                        registrations.forEach(function(registration) {
+                            registration.unregister();
+                        });
+                    });
+                }
+            }
+        });
+        
+        // Если ошибка загрузки
+        window.addEventListener('error', function(e) {
+            console.error('❌ Ошибка загрузки:', e);
+            document.getElementById('simpleLoader').innerHTML = 
+                '<div style="text-align:center;padding:20px;">' +
+                '<h3>Ошибка загрузки</h3>' +
+                '<p>Попробуйте обновить страницу</p>' +
+                '<button onclick="location.reload()">Обновить</button>' +
+                '</div>';
+        });
+    </script>
+</body>
+</html>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>УчебаНа5+ - Решалка и ГДЗ</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.7.0/math.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="light-theme">
+    <div id="notification" class="notification"></div>
+    <div id="loader" class="loader">
+        <div class="spinner"></div>
+    </div>
+    
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <h1><i class="fas fa-graduation-cap"></i> УчебаНа5+</h1>
+                <p>Оффлайн решалка и помощник в учебе</p>
+            </div>
+            <div class="header-controls">
+                <button id="themeToggle" class="btn btn-icon" title="Сменить тему">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <div id="keyStatus" class="key-status inactive">
+                    <i class="fas fa-key"></i>
+                    <span>Ключ не активирован</span>
+                </div>
+                <button id="menuToggle" class="btn btn-icon">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </header>
+        
+        <nav id="mainNav" class="nav">
+            <ul>
+                <li><a href="#solver" class="nav-link active"><i class="fas fa-calculator"></i> Решалка</a></li>
+                <li><a href="#column-math" class="nav-link"><i class="fas fa-divide"></i> Столбиком</a></li>
+                <li><a href="#notes" class="nav-link"><i class="fas fa-sticky-note"></i> Памятки</a></li>
+                <li><a href="#key" class="nav-link"><i class="fas fa-key"></i> Активация</a></li>
+                <li><a href="#buy" class="nav-link"><i class="fas fa-shopping-cart"></i> Купить ключ</a></li>
+            </ul>
+        </nav>
+        
+        <main class="main-content">
+            <section id="solver" class="section active">
+                <h2><i class="fas fa-robot"></i> Умная решалка уравнений</h2>
+                <div class="solver-container">
+                    <div class="input-group">
+                        <input type="text" id="equationInput" placeholder="Введите уравнение (например: 6x+2x+97=1561 или 2(x+3)=5x-2)" class="equation-input">
+                        <button id="solveBtn" class="btn btn-primary">
+                            <i class="fas fa-play"></i> Решить
+                        </button>
+                    </div>
+                    <div class="variables-info">
+                        <p><strong>Поддерживает:</strong> x, y, z, a, b, c, X, Y, Z</p>
+                        <p><strong>Примеры:</strong> 3x+5=20, 2(x-3)=4, x^2-4=0, 2x+3y=10</p>
+                    </div>
+                    <div id="solutionSteps" class="solution-steps">
+                        <h3>Шаги решения:</h3>
+                        <div id="stepsContainer" class="steps-container"></div>
+                    </div>
+                    <div id="solutionResult" class="solution-result">
+                        <h3>Ответ:</h3>
+                        <div id="resultContainer" class="result-container"></div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="column-math" class="section">
+                <h2><i class="fas fa-columns"></i> Математика в столбик</h2>
+                <div class="column-math-container">
+                    <div class="operation-selector">
+                        <button class="btn operation-btn active" data-op="+">Сложение</button>
+                        <button class="btn operation-btn" data-op="-">Вычитание</button>
+                        <button class="btn operation-btn" data-op="×">Умножение</button>
+                        <button class="btn operation-btn" data-op="/">Деление</button>
+                    </div>
+                    <div class="numbers-input">
+                        <input type="number" id="num1" placeholder="Первое число" class="number-input">
+                        <div class="operation-display" id="opDisplay">+</div>
+                        <input type="number" id="num2" placeholder="Второе число" class="number-input">
+                        <button id="calculateColumn" class="btn btn-primary">
+                            <i class="fas fa-calculator"></i> Посчитать
+                        </button>
+                    </div>
+                    <div id="columnResult" class="column-result"></div>
+                </div>
+            </section>
+            
+            <section id="notes" class="section">
+                <h2><i class="fas fa-images"></i> Мои памятки</h2>
+                <div class="notes-container">
+                    <div class="upload-area" id="uploadArea">
+                        <i class="fas fa-cloud-upload-alt fa-3x"></i>
+                        <p>Перетащите сюда фото или нажмите для загрузки</p>
+                        <p class="small">(Расписание, формулы, конспекты)</p>
+                        <input type="file" id="photoUpload" accept="image/*" multiple style="display: none;">
+                        <button id="uploadBtn" class="btn btn-secondary">
+                            <i class="fas fa-upload"></i> Выбрать файлы
+                        </button>
+                    </div>
+                    <div id="gallery" class="gallery"></div>
+                </div>
+            </section>
+            
+            <section id="key" class="section">
+                <h2><i class="fas fa-key"></i> Активация ключа доступа</h2>
+                <div class="key-container">
+                    <div class="key-info">
+                        <div class="key-timer" id="keyTimer">
+                            <h3>Доступ активен: <span id="daysLeft">0</span> дней</h3>
+                            <div class="progress-bar">
+                                <div id="progressFill" class="progress-fill"></div>
+                            </div>
+                            <p id="expiryDate">Дата окончания: не активировано</p>
+                        </div>
+                        <div class="key-input-group">
+                            <input type="text" id="keyInput" placeholder="Введите ключ (например: UCH-NA5-SUN-723)" class="key-input">
+                            <button id="activateKey" class="btn btn-success">
+                                <i class="fas fa-check"></i> Активировать
+                            </button>
+                        </div>
+                        <div class="key-features">
+                            <h4>Что дает ключ:</h4>
+                            <ul>
+                                <li><i class="fas fa-check-circle"></i> Полный доступ к решалке</li>
+                                <li><i class="fas fa-check-circle"></i> Подробные шаги решения</li>
+                                <li><i class="fas fa-check-circle"></i> Оффлайн режим</li>
+                                <li><i class="fas fa-check-circle"></i> Приоритетная поддержка</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="buy" class="section">
+                <h2><i class="fas fa-shopping-cart"></i> Получить ключ доступа</h2>
+                <div class="buy-container">
+                    <div class="buy-card premium">
+                        <h3><i class="fas fa-crown"></i> Премиум доступ</h3>
+                        <div class="price">10 дней</div>
+                        <div class="features">
+                            <p><i class="fas fa-star"></i> Все функции разблокированы</p>
+                            <p><i class="fas fa-star"></i> Подробные решения</p>
+                            <p><i class="fas fa-star"></i> Работа оффлайн</p>
+                            <p><i class="fas fa-star"></i> Поддержка 24/7</p>
+                        </div>
+                        <div class="special-offer">
+                            <h4><i class="fas fa-gift"></i> Специальное предложение!</h4>
+                            <p class="highlight">1 пользователю 1 ключ бесплатно!</p>
+                            <p class="small">Попробуйте все функции прямо сейчас</p>
+                        </div>
+                        <div class="contacts">
+                            <h4><i class="fas fa-headset"></i> Свяжитесь для покупки:</h4>
+                            <a href="https://t.me/west_next" class="contact-link telegram" target="_blank">
+                                <i class="fab fa-telegram"></i>
+                                Telegram: @west_next
+                            </a>
+                            <a href="https://wa.me/79695356936" class="contact-link whatsapp" target="_blank">
+                                <i class="fab fa-whatsapp"></i>
+                                WhatsApp: +7 (969) 535-69-36
+                            </a>
+                            <div class="phone-display">
+                                <i class="fas fa-phone"></i>
+                                +7 (969) 535-69-36
+                            </div>
+                        </div>
+                        <div class="coming-soon">
+                            <h4><i class="fas fa-bolt"></i> Скоро в обновлении:</h4>
+                            <p class="highlight">ГДЗ оффлайн база!</p>
+                            <p>Тысячи готовых домашних заданий всегда под рукой</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+        
+        <footer class="footer">
+            <p>© 2024 УчебаНа5+. Все права защищены.</p>
+            <p class="small">Работает оффлайн | PWA приложение</p>
+        </footer>
+    </div>
+    
+    <script src="app.js"></script>
+    <script>
+// Фикс для Яндекс.Браузера
+if (navigator.userAgent.includes('YaBrowser')) {
+    console.log('Яндекс.Браузер обнаружен, отключаем проблемные функции');
+    
+    // Отключаем Service Worker
+    if (navigator.serviceWorker) {
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+            registrations.forEach(function(registration) {
+                registration.unregister();
+            });
+        });
+    }
+    
+    // Отключаем PWA
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+        console.log('PWA режим, игнорируем');
+    }
+}
+    </script>
+    <!-- В <head> или перед закрывающим </body> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.7.0/math.min.js"></script>
+<!-- Стили для статистики -->
+<style>
+    #visitorCounter:hover {
+        background: rgba(0, 0, 0, 0.9);
+        transform: scale(1.05);
+    }
+    
+    .dark-theme #visitorCounter {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+    }
+</style>
+    <!-- Вставь эту строку в <head> или перед закрывающим </body> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.7.0/math.min.js"></script>
+</body>
+</html>
